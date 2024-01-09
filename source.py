@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import google.generativeai as genai
 import streamlit as st
 import config
@@ -606,5 +605,4 @@ st.markdown(
     Respect copyrights and trademarks.  
     Model Developed : Aswin Damarapalli  
     """
->>>>>>> aae24ad8bffad668d22fc6194f753cfe5854559f
 )
