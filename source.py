@@ -296,14 +296,15 @@ if st.session_state['step'] == 2:
         custom_title = st.text_input("Or edit the chosen title", value=selected)
         cols = st.columns([1,1,1])
         with cols[0]:
-            if st.button("Back"): go_back()
+            if st.button("Back", key="back_step2"):
+                go_back()
         with cols[1]:
-            if st.button("Regenerate Titles"):
+            if st.button("Regenerate Titles", key="regen_titles_step2"):
                 with st.spinner("Regenerating..."):
                     st.session_state['titles'] = generate_titles(st.session_state.get('topic',''), count=8)
-                st.experimental_rerun()
+                st.rerun()
         with cols[2]:
-            if st.button("Proceed"):
+            if st.button("Proceed", key="proceed_step2"):
                 st.session_state['final_title'] = custom_title or selected
                 topic = st.session_state.get('topic','Topic')
                 default_sections = [
@@ -315,6 +316,7 @@ if st.session_state['step'] == 2:
                 ]
                 st.session_state['sections'] = default_sections[:st.session_state.get('slides_count', DEFAULT_SLIDES)]
                 go_next()
+
 
 # Step 3
 if st.session_state['step'] == 3:
@@ -333,27 +335,33 @@ if st.session_state['step'] == 3:
             edited.append(extra)
         st.session_state['edited_sections'] = edited
         cols = st.columns([1,1])
-        with cols[0]:
-            if st.button("Back"): go_back()
-        with cols[1]:
-            if st.button("Generate Slide Content"):
-                final_sections = edited[:st.session_state.get('slides_count', DEFAULT_SLIDES)]
-                slide_contents = []
-                with st.spinner("Generating slide content via Gemini…"):
-                    for sec in final_sections:
-                        slide = generate_slide_text(st.session_state.get('final_title','Presentation'), sec, st.session_state.get('audience','Executive'), include_image_keyword=True)
-                        slide['slide_title'] = sec
-                        slide['image_local_path'] = None
-                        # safe pexels flow
-                        if attach_images and slide.get('image_keyword'):
-                            img_url = fetch_image_url_safe(slide['image_keyword'], PEXELS_KEY)
-                            if img_url:
-                                local_path = download_image_to_path(img_url, slide['image_keyword'])
-                                if local_path:
-                                    slide['image_local_path'] = local_path
-                        slide_contents.append(slide)
-                st.session_state['slide_contents'] = slide_contents
-                go_next()
+with cols[0]:
+    if st.button("Back", key="back_step3"):
+        go_back()
+with cols[1]:
+    if st.button("Generate Slide Content", key="gen_slides_step3"):
+        final_sections = edited[:st.session_state.get('slides_count', DEFAULT_SLIDES)]
+        slide_contents = []
+        with st.spinner("Generating slide content via Gemini…"):
+            for sec in final_sections:
+                slide = generate_slide_text(
+                    st.session_state.get('final_title','Presentation'),
+                    sec,
+                    st.session_state.get('audience','Executive'),
+                    include_image_keyword=True
+                )
+                slide['slide_title'] = sec
+                slide['image_local_path'] = None
+                # safe pexels flow
+                if attach_images and slide.get('image_keyword'):
+                    img_url = fetch_image_url_safe(slide['image_keyword'], PEXELS_KEY)
+                    if img_url:
+                        local_path = download_image_to_path(img_url, slide['image_keyword'])
+                        if local_path:
+                            slide['image_local_path'] = local_path
+                slide_contents.append(slide)
+        st.session_state['slide_contents'] = slide_contents
+        go_next()
 
 # Step 4
 if st.session_state['step'] == 4:
@@ -388,27 +396,39 @@ if st.session_state['step'] == 4:
 
         cols = st.columns([1,1,1])
         with cols[0]:
-            if st.button("Back"): go_back()
+            if st.button("Back", key="back_step4"):
+                go_back()
         with cols[1]:
-            if st.button("Regenerate this slide (not implemented)"):
+            if st.button("Regenerate this slide (not implemented)", key="regen_slide_step4"):
                 st.info("Partial regeneration placeholder. You can edit bullets manually or regenerate whole flow.")
         with cols[2]:
-            if st.button("Finalize & Create PPT"):
+            if st.button("Finalize & Create PPT", key="finalize_step4"):
                 ppt_title = st.session_state.get('final_title','AI_Presentation')
                 bio = create_pptx_bytes(ppt_title, st.session_state['slide_contents'], attach_images=attach_images)
                 filename = safe_filename(ppt_title) + ".pptx"
                 st.success("PPT created!")
-                st.download_button("Download PPT", data=bio, file_name=filename, mime="application/vnd.openxmlformats-officedocument.presentationml.presentation")
+                st.download_button(
+                    "Download PPT",
+                    data=bio,
+                    file_name=filename,
+                    mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                )
                 st.session_state['step'] = 5
+
 
 # Step 5
 if st.session_state['step'] == 5:
     st.header("Step 5 — Finished")
     st.success("Presentation generated — check your downloads.")
     st.write("You can go back and tweak slides or start a new presentation.")
-    if st.button("Start New Presentation"):
-        keys = ['topic','audience','slides_count','titles','final_title','sections','edited_sections','slide_contents']
+    if st.button("Start New Presentation", key="restart_step5"):
+        keys = [
+            'topic','audience','slides_count','titles',
+            'final_title','sections','edited_sections','slide_contents'
+        ]
         for k in keys:
-            if k in st.session_state: del st.session_state[k]
+            if k in st.session_state:
+                del st.session_state[k]
         st.session_state['step'] = 1
-        st.experimental_rerun()
+        st.rerun()
+
