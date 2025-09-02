@@ -324,6 +324,52 @@ h1.hero-title{
   letter-spacing: .3px;
   text-shadow: 0 0 1px rgba(255,255,255,.14);  /* subtle “brightness” */
 }
+            /* Labels for inputs, selects, sliders */
+.stTextInput label, .stSelectbox label, .stSlider label, .stTextArea label {
+  color: #eaf2ff !important;          /* brighter */
+  font-weight: 700 !important;         /* bold */
+  letter-spacing: .2px;
+}
+
+/* Input & textarea fields */
+.stTextInput input, textarea, .stTextArea textarea {
+  background-color: #0e1629 !important;
+  color: #f7fbff !important;           /* bright text */
+  border: 1px solid #3a4a6b !important;
+  font-weight: 600 !important;
+}
+
+/* Placeholder text */
+.stTextInput input::placeholder,
+.stTextArea textarea::placeholder {
+  color: #b9c7e6 !important;           /* lighter, still readable */
+  opacity: 1 !important;
+}
+
+/* Select (dropdown) text container */
+div[data-baseweb="select"] {
+  background-color: #0e1629 !important;
+  color: #f7fbff !important;
+  border: 1px solid #3a4a6b !important;
+  font-weight: 600 !important;
+}
+
+/* Select menu items */
+div[role="listbox"] > div {
+  color: #eaf2ff !important;
+}
+
+/* Slider numbers and ticks */
+.css-1siy2j7, .css-q8sbsg, .stSlider .st-c7,
+.stSlider [data-baseweb="slider"] {
+  color: #eaf2ff !important;
+  font-weight: 700 !important;
+}
+
+/* General small text (helper/descriptions) */
+.small, .stMarkdown p, .stCaption, .stAlert p {
+  color: #dfe9ff !important;
+}
 </style>
 
 <h1 class="hero-title">✨ AI PPT Wizard</h1>
