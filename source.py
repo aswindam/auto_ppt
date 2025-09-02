@@ -335,33 +335,33 @@ if st.session_state['step'] == 3:
             edited.append(extra)
         st.session_state['edited_sections'] = edited
         cols = st.columns([1,1])
-with cols[0]:
-    if st.button("Back", key="back_step3"):
-        go_back()
-with cols[1]:
-    if st.button("Generate Slide Content", key="gen_slides_step3"):
-        final_sections = edited[:st.session_state.get('slides_count', DEFAULT_SLIDES)]
-        slide_contents = []
-        with st.spinner("Generating slide content via Gemini…"):
-            for sec in final_sections:
-                slide = generate_slide_text(
-                    st.session_state.get('final_title','Presentation'),
-                    sec,
-                    st.session_state.get('audience','Executive'),
-                    include_image_keyword=True
-                )
-                slide['slide_title'] = sec
-                slide['image_local_path'] = None
-                # safe pexels flow
-                if attach_images and slide.get('image_keyword'):
-                    img_url = fetch_image_url_safe(slide['image_keyword'], PEXELS_KEY)
-                    if img_url:
-                        local_path = download_image_to_path(img_url, slide['image_keyword'])
-                        if local_path:
-                            slide['image_local_path'] = local_path
-                slide_contents.append(slide)
-        st.session_state['slide_contents'] = slide_contents
-        go_next()
+        with cols[0]:
+            if st.button("Back", key="back_step3"):
+                go_back()
+        with cols[1]:
+            if st.button("Generate Slide Content", key="gen_slides_step3"):
+                final_sections = edited[:st.session_state.get('slides_count', DEFAULT_SLIDES)]
+                slide_contents = []
+                with st.spinner("Generating slide content via Gemini…"):
+                    for sec in final_sections:
+                        slide = generate_slide_text(
+                            st.session_state.get('final_title','Presentation'),
+                            sec,
+                            st.session_state.get('audience','Executive'),
+                            include_image_keyword=True
+                        )
+                        slide['slide_title'] = sec
+                        slide['image_local_path'] = None
+                        # safe pexels flow
+                        if attach_images and slide.get('image_keyword'):
+                            img_url = fetch_image_url_safe(slide['image_keyword'], PEXELS_KEY)
+                            if img_url:
+                                local_path = download_image_to_path(img_url, slide['image_keyword'])
+                                if local_path:
+                                    slide['image_local_path'] = local_path
+                        slide_contents.append(slide)
+                st.session_state['slide_contents'] = slide_contents
+                go_next()
 
 # Step 4
 if st.session_state['step'] == 4:
