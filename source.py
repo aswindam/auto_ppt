@@ -1,4 +1,3 @@
-# ai_ppt_wizard_full_gemini.py
 import os
 import re
 import io
@@ -6,7 +5,7 @@ import requests
 import streamlit as st
 from pptx import Presentation
 from pptx.util import Inches
-from dotenv import load_dotenv
+from load_dotenv import load_dotenv
 import google.generativeai as genai
 from PIL import Image
 
