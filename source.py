@@ -57,6 +57,90 @@ st.markdown("""
       display:inline-block; padding:2px 8px; border-radius:999px;
       background:#0f5132; color:#d1fae5; font-size:12px; margin-left:6px;
     }
+    
+    /* Labels for inputs, selects, sliders */
+    .stTextInput label, .stSelectbox label, .stSlider label, .stTextArea label {
+    color: #eaf2ff !important;          /* brighter */
+    font-weight: 700 !important;         /* bold */
+    letter-spacing: .2px;
+    }
+
+    /* Input & textarea fields */
+    .stTextInput input, textarea, .stTextArea textarea {
+    background-color: #0e1629 !important;
+    color: #f7fbff !important;           /* bright text */
+    border: 1px solid #3a4a6b !important;
+    font-weight: 600 !important;
+    }
+
+    /* Placeholder text */
+    .stTextInput input::placeholder,
+    .stTextArea textarea::placeholder {
+    color: #b9c7e6 !important;           /* lighter, still readable */
+    opacity: 1 !important;
+    }
+
+    /* Select (dropdown) text container */
+    div[data-baseweb="select"] {
+    background-color: #0e1629 !important;
+    color: #f7fbff !important;
+    border: 1px solid #3a4a6b !important;
+    font-weight: 600 !important;
+    }
+
+    /* Select menu items */
+    div[role="listbox"] > div {
+    color: #eaf2ff !important;
+    }
+
+    /* Slider numbers and ticks */
+    .css-1siy2j7, .css-q8sbsg, .stSlider .st-c7,
+    .stSlider [data-baseweb="slider"] {
+    color: #eaf2ff !important;
+    font-weight: 700 !important;
+    }
+
+    /* General small text (helper/descriptions) */
+    .small, .stMarkdown p, .stCaption, .stAlert p {
+    color: #dfe9ff !important;
+    }
+                
+    /* ===== Force bright headers & labels (high priority) ===== */
+    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3,
+    h1, h2, h3 {
+    color: #eaf2ff !important;          /* bright */
+    text-shadow: 0 0 1px rgba(255,255,255,.10);
+    font-weight: 900 !important;
+    }
+
+    /* Step section header style */
+    .step-header {
+    color: #eaf2ff !important;          /* bright */
+    font-weight: 900 !important;
+    letter-spacing: .2px;
+    border-left: 6px solid #22d3ee;
+    padding-left: 12px;
+    margin: 8px 0 16px 0;
+    line-height: 1.25;
+    }
+
+    /* Labels above inputs */
+    label, .stTextInput label, .stSelectbox label, .stSlider label, .stTextArea label {
+    color: #eaf2ff !important;
+    opacity: 1 !important;
+    font-weight: 700 !important;
+    }
+
+    /* Inputs themselves (text is sometimes dim without this) */
+    input, textarea, [data-baseweb="select"] * {
+    color: #f7fbff !important;
+    }
+
+    /* Placeholder text (brighter) */
+    input::placeholder, textarea::placeholder {
+    color: #cbd8ff !important;
+    opacity: 1 !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -324,52 +408,7 @@ h1.hero-title{
   letter-spacing: .3px;
   text-shadow: 0 0 1px rgba(255,255,255,.14);  /* subtle “brightness” */
 }
-            /* Labels for inputs, selects, sliders */
-.stTextInput label, .stSelectbox label, .stSlider label, .stTextArea label {
-  color: #eaf2ff !important;          /* brighter */
-  font-weight: 700 !important;         /* bold */
-  letter-spacing: .2px;
-}
 
-/* Input & textarea fields */
-.stTextInput input, textarea, .stTextArea textarea {
-  background-color: #0e1629 !important;
-  color: #f7fbff !important;           /* bright text */
-  border: 1px solid #3a4a6b !important;
-  font-weight: 600 !important;
-}
-
-/* Placeholder text */
-.stTextInput input::placeholder,
-.stTextArea textarea::placeholder {
-  color: #b9c7e6 !important;           /* lighter, still readable */
-  opacity: 1 !important;
-}
-
-/* Select (dropdown) text container */
-div[data-baseweb="select"] {
-  background-color: #0e1629 !important;
-  color: #f7fbff !important;
-  border: 1px solid #3a4a6b !important;
-  font-weight: 600 !important;
-}
-
-/* Select menu items */
-div[role="listbox"] > div {
-  color: #eaf2ff !important;
-}
-
-/* Slider numbers and ticks */
-.css-1siy2j7, .css-q8sbsg, .stSlider .st-c7,
-.stSlider [data-baseweb="slider"] {
-  color: #eaf2ff !important;
-  font-weight: 700 !important;
-}
-
-/* General small text (helper/descriptions) */
-.small, .stMarkdown p, .stCaption, .stAlert p {
-  color: #dfe9ff !important;
-}
 </style>
 
 <h1 class="hero-title">✨ AI PPT Wizard</h1>
@@ -386,7 +425,7 @@ def go_back(): st.session_state['step'] = max(1, st.session_state['step'] - 1)
 
 # Step 1
 if st.session_state['step'] == 1:
-    st.header("Step 1 — Topic & Purpose")
+    st.markdown("<h2 class='step-header'>Step 1 — Topic & Purpose</h2>", unsafe_allow_html=True)
     topic = st.text_input("Enter the presentation topic", value=st.session_state.get('topic',''))
     audience = st.selectbox("Audience style", AUDIENCE_PRESETS, index=0)
     slides_count = st.slider("Desired number of slides", min_value=1, max_value=30, value=DEFAULT_SLIDES)
@@ -409,7 +448,7 @@ if st.session_state['step'] == 1:
 
 # Step 2
 if st.session_state['step'] == 2:
-    st.header("Step 2 — Pick & Edit Title")
+    st.markdown("<h2 class='step-header'>Step 2 — Pick & Edit Title</h2>", unsafe_allow_html=True)
     titles = st.session_state.get('titles', [])
     if not titles:
         st.warning("No titles yet — go back and generate.")
@@ -445,7 +484,7 @@ if st.session_state['step'] == 2:
 
 # Step 3
 if st.session_state['step'] == 3:
-    st.header("Step 3 — Outline (Edit Sections)")
+    st.markdown("<h2 class='step-header'>Step 3 — Outline (Edit Sections)</h2>", unsafe_allow_html=True)
     sections = st.session_state.get('sections', [])
     if not sections:
         st.warning("No sections configured. Go back to select a title.")
@@ -490,7 +529,7 @@ if st.session_state['step'] == 3:
 
 # Step 4
 if st.session_state['step'] == 4:
-    st.header("Step 4 — Preview & Edit Slides")
+    st.markdown("<h2 class='step-header'>Step 4 — Preview & Edit Slides</h2>", unsafe_allow_html=True)
     slide_contents = st.session_state.get('slide_contents', [])
     if not slide_contents:
         st.warning("No slide content found. Generate slides first.")
@@ -545,7 +584,7 @@ if st.session_state['step'] == 4:
 
 # Step 5
 if st.session_state['step'] == 5:
-    st.header("Step 5 — Finished")
+    st.markdown("<h2 class='step-header'>Step 5 — Finished</h2>", unsafe_allow_html=True)
     st.success("Presentation generated — check your downloads.")
     st.write("You can go back and tweak slides or start a new presentation.")
     if st.button("Start New Presentation", key="restart_step5"):
