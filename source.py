@@ -39,10 +39,23 @@ st.markdown("""
     .stSidebar { background-color:#071233 !important; color: #e6eef8 !important; }
     .stTextInput input, textarea { background-color:#0c1320 !important; color: #e6eef8 !important; border:1px solid #233554 !important; }
     .gradient-title {
-        background: linear-gradient(90deg, #4facfe, #00f2fe);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: 800;
+      background: linear-gradient(90deg, #6ee7f9, #22d3ee, #60a5fa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      font-weight: 900; letter-spacing: .3px; text-shadow: 0 0 .7px rgba(255,255,255,.15);
+    }
+
+    /* High-contrast “card” for sidebar sections */
+    .sidebar-card {
+      background:#0c1320; border:1px solid #233554; border-radius:12px;
+      padding:14px; color:#e6eef8 !important; opacity:1 !important;
+    }
+    .sidebar-card h4 { margin:0 0 8px 0; font-weight:800; }
+    .sidebar-card ol { margin:8px 0 0 18px; }
+    .sidebar-card li { margin:4px 0; }
+    .sidebar-card a { color:#8bd3ff; text-decoration:underline; }
+    .badge-ok {
+      display:inline-block; padding:2px 8px; border-radius:999px;
+      background:#0f5132; color:#d1fae5; font-size:12px; margin-left:6px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -51,67 +64,89 @@ st.markdown("""
 with st.sidebar:
     st.title("⚡ AI PPT Wizard")
 
-    # Gemini API key
+    # --- GEMINI KEY (persist + auto-apply with fallback to env) ---
     st.subheader("Gemini API Key")
     gemini_input = st.text_input(
         "Enter your Gemini API Key (optional)",
         type="password",
         help="Get a free key from [Google AI Studio](https://aistudio.google.com/app/apikey)"
     )
-    G_API_KEY = gemini_input.strip() if gemini_input else os.getenv("G_API_KEY")
+    if gemini_input:
+        st.session_state["gemini_key"] = gemini_input.strip()
+
+    G_API_KEY = st.session_state.get("gemini_key") or os.getenv("G_API_KEY")
 
     if not G_API_KEY:
-        st.error("⚠ No Gemini API key found. Please provide one to generate slides.")
+        st.error("⚠ No Gemini API key found. Enter a key above (or set it in your environment) to generate slides.")
         st.stop()
     else:
         try:
             genai.configure(api_key=G_API_KEY)
             MODEL = genai.GenerativeModel("gemini-2.5-flash")
-            st.success("✔ Gemini API key is active.")
+            st.markdown("**Gemini API key** <span class='badge-ok'>Active</span>", unsafe_allow_html=True)
         except Exception as e:
             st.error(f"Failed to initialize Gemini: {e}")
             st.stop()
 
-    # Pexels API key
+    # --- PEXELS KEY (persist + fallback) ---
     st.subheader("Pexels API Key (Optional)")
     pexels_input = st.text_input(
         "Enter your Pexels API Key (optional)",
         type="password",
         help="Get a free key from [Pexels](https://www.pexels.com/api/)"
     )
-    PEXELS_KEY = pexels_input.strip() if pexels_input else os.getenv("PEXELS_API_KEY")
+    if pexels_input:
+        st.session_state["pexels_key"] = pexels_input.strip()
+
+    PEXELS_KEY = st.session_state.get("pexels_key") or os.getenv("PEXELS_API_KEY")
+
     if PEXELS_KEY:
         attach_images = True
-        st.success("✔ Images will be fetched from Pexels.")
+        st.markdown("**Pexels images** <span class='badge-ok'>Enabled</span>", unsafe_allow_html=True)
     else:
         attach_images = False
-        st.info("ℹ️ No Pexels API key provided. Slides will show image keywords only.")
+        st.info("ℹ️ No Pexels API key provided. Slides will include image suggestions (keywords) only.")
+
 
     st.markdown("---")
 
-    if st.button("📖 See Instructions"):
-        st.info(
-            "✨ **Flow**:\n"
-            "1️⃣ Enter Topic & choose audience\n"
-            "2️⃣ Generate titles and pick one\n"
-            "3️⃣ Edit outline/sections\n"
-            "4️⃣ Preview & edit slide bullets and notes\n"
-            "5️⃣ Generate PPT and download\n\n"
-            "💡 Tip: Add a Pexels key above to include real images."
+    if st.button("📖 See Instructions", key="see_instructions"):
+        st.markdown(
+            """
+            <div class="sidebar-card">
+            <h4>✨ Flow</h4>
+            <ol>
+                <li><b>Enter Topic</b> & choose audience</li>
+                <li><b>Generate titles</b> and pick one</li>
+                <li><b>Edit</b> the outline/sections</li>
+                <li><b>Preview & edit</b> bullets + notes</li>
+                <li><b>Generate PPT</b> and download</li>
+            </ol>
+            <p>💡 Tip: Add a Pexels API key above to include real images.</p>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
     st.markdown("---")
     st.subheader("Disclaimer")
     st.markdown(
         """
-        ⚠️ **Important Notice**
-
-        - The slides are **AI-assisted** and may contain inaccuracies.  
-        - Always **review and fact-check** before professional use.  
-        - Your **API keys remain private** — they are only used locally.  
-        - Images (if enabled) come from **Pexels** under their [license](https://www.pexels.com/license/).  
-        """
+        <div class="sidebar-card">
+        <h4>⚠️ Important Notice</h4>
+        <ul>
+            <li>Slides are <b>AI-assisted</b> and may contain inaccuracies.</li>
+            <li>Please <b>review and fact-check</b> before professional use.</li>
+            <li>Your <b>API keys remain private</b> — used only locally.</li>
+            <li>Images (if enabled) come from <b>Pexels</b> under their
+            <a href="https://www.pexels.com/license/" target="_blank">license</a>.
+            </li>
+        </ul>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
+
 
 # One-time popup
 if 'popup_shown' not in st.session_state:
