@@ -299,24 +299,38 @@ def create_pptx_bytes(ppt_title, slide_contents, attach_images=False):
 # ---------- APP HEADER ----------
 st.markdown("""
 <style>
-@keyframes shimmer {
-  0% { background-position: -500px 0; }
-  100% { background-position: 500px 0; }
+:root {
+  --hero-grad: linear-gradient(90deg, #6ee7f9, #22d3ee, #60a5fa, #22d3ee, #6ee7f9);
 }
-.gradient-title {
-  background: linear-gradient(90deg, #6ee7f9, #22d3ee, #60a5fa, #22d3ee, #6ee7f9);
+
+/* fade-in + shimmer */
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes fadeScale {
+  0% { opacity: 0; transform: translateY(4px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+h1.hero-title{
+  display:inline-block;               /* important for background-clip animation */
+  background: var(--hero-grad);
+  background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: fadeScale .8s ease-out both, shimmer 3s linear infinite !important;
   font-weight: 900;
   letter-spacing: .3px;
-  background-size: 1000px 100%;
-  animation: shimmer 3s infinite linear;
+  text-shadow: 0 0 1px rgba(255,255,255,.14);  /* subtle “brightness” */
 }
 </style>
-<h1 class='gradient-title'>✨ AI PPT Wizard </h1>
+
+<h1 class="hero-title">✨ AI PPT Wizard</h1>
 """, unsafe_allow_html=True)
 
 st.write("Guided flow: Topic → Titles → Outline → Edit → Generate PPT")
+
 
 
 # ---------- STEP STATE HANDLERS ----------
