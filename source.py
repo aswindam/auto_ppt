@@ -5,9 +5,26 @@ import requests
 import streamlit as st
 from pptx import Presentation
 from pptx.util import Inches
-from load_dotenv import load_dotenv
+from dotenv import load_dotenv
 import google.generativeai as genai
 from PIL import Image
+import streamlit.components.v1 as components
+
+# --- SESSION STATE DEFAULTS ---
+if "step" not in st.session_state:
+    st.session_state["step"] = 1
+if "subject" not in st.session_state:
+    st.session_state["subject"] = ""
+if "titles" not in st.session_state:
+    st.session_state["titles"] = []
+if "selected_title" not in st.session_state:
+    st.session_state["selected_title"] = ""
+if "slide_content" not in st.session_state:
+    st.session_state["slide_content"] = []
+if "images" not in st.session_state:
+    st.session_state["images"] = []
+
+
 
 # Load .env if present
 load_dotenv()
@@ -28,6 +45,8 @@ else:
 
 # ---------- PEXELS (safe fetch) ----------
 PEXELS_KEY = os.getenv("PEXELS_API_KEY")
+
+
 
 def fetch_image_url_safe(query, api_key):
     """
@@ -232,14 +251,12 @@ with st.sidebar:
 # One-time popup
 if 'popup_shown' not in st.session_state:
     st.session_state['popup_shown'] = True
-    st.components.v1.html("<script>alert('💡 This app uses a dark UI for best visibility.');</script>")
+    components.html("<script>alert('💡 This app uses a dark UI for best visibility.');</script>")
 
 st.title("AI PPT Wizard — Gemini-Pro")
 st.write("Guided flow: Topic → Titles → Outline → Edit → Generate PPT")
 
 # Step state
-if 'step' not in st.session_state:
-    st.session_state['step'] = 1
 
 def go_next(): st.session_state['step'] = min(5, st.session_state['step'] + 1)
 def go_back(): st.session_state['step'] = max(1, st.session_state['step'] - 1)
