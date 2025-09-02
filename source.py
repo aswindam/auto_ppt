@@ -297,8 +297,27 @@ def create_pptx_bytes(ppt_title, slide_contents, attach_images=False):
     return bio
 
 # ---------- APP HEADER ----------
-st.markdown("<h1 class='gradient-title'>✨ AI PPT Wizard </h1>", unsafe_allow_html=True)
+st.markdown("""
+<style>
+@keyframes shimmer {
+  0% { background-position: -500px 0; }
+  100% { background-position: 500px 0; }
+}
+.gradient-title {
+  background: linear-gradient(90deg, #6ee7f9, #22d3ee, #60a5fa, #22d3ee, #6ee7f9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+  letter-spacing: .3px;
+  background-size: 1000px 100%;
+  animation: shimmer 3s infinite linear;
+}
+</style>
+<h1 class='gradient-title'>✨ AI PPT Wizard </h1>
+""", unsafe_allow_html=True)
+
 st.write("Guided flow: Topic → Titles → Outline → Edit → Generate PPT")
+
 
 # ---------- STEP STATE HANDLERS ----------
 def go_next(): st.session_state['step'] = min(5, st.session_state['step'] + 1)
